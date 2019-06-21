@@ -49,7 +49,7 @@ spec:
               add: ["SYS_ADMIN"]
             allowPrivilegeEscalation: true
           # for stable functionality replace canary with latest release version
-          image: quay.io/cephcsi/cephcsi:canary
+          image: docker.tiki-dsp.io/cephcsi:0.1.0
           args:
             - "--nodeid=$(NODE_ID)"
             - "--type=cephfs"
@@ -69,7 +69,7 @@ spec:
                   fieldPath: metadata.namespace
             - name: CSI_ENDPOINT
               value: unix:///csi/csi.sock
-          imagePullPolicy: "IfNotPresent"
+          imagePullPolicy: "Always"
           volumeMounts:
             - name: mount-cache-dir
               mountPath: /mount-cache-dir
@@ -121,3 +121,5 @@ spec:
         - name: ceph-csi-config
           configMap:
             name: ceph-csi-config
+      imagePullSecrets:
+        - name: docker-registry-token-secret

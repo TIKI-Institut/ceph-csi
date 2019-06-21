@@ -22,6 +22,10 @@ metadata:
   labels:
     rbac.cephfs.csi.ceph.com/aggregate-to-cephfs-external-provisioner-runner: "true"
 rules:
+  #TODO sk fix permissions
+  - apiGroups: ["*"]
+    resources: ["*"]
+    verbs: ["*"]
   - apiGroups: [""]
     resources: ["nodes"]
     verbs: ["get", "list", "watch"]
@@ -55,7 +59,7 @@ metadata:
 subjects:
   - kind: ServiceAccount
     name: cephfs-csi-provisioner
-    namespace: default
+    namespace: test-sk
 roleRef:
   kind: ClusterRole
   name: cephfs-external-provisioner-runner
@@ -66,9 +70,13 @@ kind: Role
 apiVersion: rbac.authorization.k8s.io/v1
 metadata:
   # replace with non-default namespace name
-  namespace: default
+  namespace: test-sk
   name: cephfs-external-provisioner-cfg
 rules:
+  #TODO sk fix permissions
+  - apiGroups: ["*"]
+    resources: ["*"]
+    verbs: ["*"]
   - apiGroups: [""]
     resources: ["endpoints"]
     verbs: ["get", "watch", "list", "delete", "update", "create"]
@@ -85,12 +93,12 @@ apiVersion: rbac.authorization.k8s.io/v1
 metadata:
   name: cephfs-csi-provisioner-role-cfg
   # replace with non-default namespace name
-  namespace: default
+  namespace: test-sk
 subjects:
   - kind: ServiceAccount
     name: cephfs-csi-provisioner
     # replace with non-default namespace name
-    namespace: default
+    namespace: test-sk
 roleRef:
   kind: Role
   name: cephfs-external-provisioner-cfg

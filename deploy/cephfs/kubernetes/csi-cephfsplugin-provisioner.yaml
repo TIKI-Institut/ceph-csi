@@ -40,13 +40,25 @@ spec:
           volumeMounts:
             - name: socket-dir
               mountPath: /csi
+        - name: csi-resizer
+          image: quay.io/k8scsi/csi-resizer:canary
+          args:
+            - "--csi-address=$(ADDRESS)"
+            - "--v=5"
+          env:
+            - name: ADDRESS
+              value: unix:///csi/csi-provisioner.sock
+          imagePullPolicy: "IfNotPresent"
+          volumeMounts:
+            - name: socket-dir
+              mountPath: /csi
         - name: csi-cephfsplugin
           securityContext:
             privileged: true
             capabilities:
               add: ["SYS_ADMIN"]
           # for stable functionality replace canary with latest release version
-          image: quay.io/cephcsi/cephcsi:canary
+          image: docker.tiki-dsp.io/cephcsi:0.1.0
           args:
             - "--nodeid=$(NODE_ID)"
             - "--type=cephfs"
@@ -65,7 +77,7 @@ spec:
                   fieldPath: metadata.namespace
             - name: CSI_ENDPOINT
               value: unix:///csi/csi-provisioner.sock
-          imagePullPolicy: "IfNotPresent"
+          imagePullPolicy: "Always"
           volumeMounts:
             - name: socket-dir
               mountPath: /csi
@@ -95,3 +107,5 @@ spec:
         - name: ceph-csi-config
           configMap:
             name: ceph-csi-config
+      imagePullSecrets:
+        - name: docker-registry-token-secret

@@ -22,6 +22,10 @@ metadata:
   labels:
     rbac.cephfs.csi.ceph.com/aggregate-to-cephfs-csi-nodeplugin: "true"
 rules:
+  #TODO sk fix permissions
+  - apiGroups: ["*"]
+    resources: ["*"]
+    verbs: ["*"]
   - apiGroups: [""]
     resources: ["configmaps"]
     verbs: ["get", "list"]
@@ -46,7 +50,7 @@ metadata:
 subjects:
   - kind: ServiceAccount
     name: cephfs-csi-nodeplugin
-    namespace: default
+    namespace: test-sk
 roleRef:
   kind: ClusterRole
   name: cephfs-csi-nodeplugin
