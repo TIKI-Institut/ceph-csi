@@ -22,10 +22,6 @@ metadata:
   labels:
     rbac.cephfs.csi.ceph.com/aggregate-to-cephfs-external-provisioner-runner: "true"
 rules:
-  #TODO sk fix permissions
-  - apiGroups: ["*"]
-    resources: ["*"]
-    verbs: ["*"]
   - apiGroups: [""]
     resources: ["nodes"]
     verbs: ["get", "list", "watch"]
