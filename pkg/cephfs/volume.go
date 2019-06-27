@@ -91,6 +91,26 @@ func createVolume(volOptions *volumeOptions, adminCr *credentials, volID volumeI
 	return nil
 }
 
+func expandVolume(volOptions *volumeOptions, adminCr *credentials, volID volumeID, bytesQuota int64) error {
+	if err := mountCephRoot(volID, volOptions, adminCr); err != nil {
+		return err
+	}
+	defer unmountCephRoot(volID)
+
+	var volRoot = getCephRootVolumePathLocal(volID)
+
+	if err := createMountPoint(volRoot); err != nil {
+		return err
+	}
+
+	if bytesQuota > 0 {
+		if err := setVolumeAttribute(volRoot, "ceph.quota.max_bytes", fmt.Sprintf("%d", bytesQuota)); err != nil {
+			return err
+		}
+	}
+	return nil
+}
+
 func purgeVolume(volID volumeID, adminCr *credentials, volOptions *volumeOptions) error {
 	if err := mountCephRoot(volID, volOptions, adminCr); err != nil {
 		return err

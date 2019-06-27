@@ -217,7 +217,7 @@ func (cs *ControllerServer) ControllerExpandVolume(ctx context.Context, req *csi
 		return nil, status.Error(codes.InvalidArgument, err.Error())
 	}
 
-	if err := createVolume(&ce.VolOptions, cr, volID, req.GetCapacityRange().GetRequiredBytes()); err != nil {
+	if err := expandVolume(&ce.VolOptions, cr, volID, req.GetCapacityRange().GetRequiredBytes()); err != nil {
 		klog.Errorf("failed to expand volume %s: %v", volID, err)
 		return nil, status.Error(codes.Internal, err.Error())
 	}
