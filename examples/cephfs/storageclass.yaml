@@ -7,7 +7,7 @@ provisioner: cephfs.csi.ceph.com
 parameters:
   # Comma separated list of Ceph monitors
   # if using FQDN, make sure csi plugin's dns policy is appropriate.
-  monitors: mon1:port,mon2:port,...
+  monitors: 10.100.0.11:6789,10.100.0.12:6789,10.100.0.13:6789
 
   # For provisionVolume: "true":
   #   A new volume will be created along with a new Ceph user.
@@ -28,9 +28,12 @@ parameters:
 
   # The secrets have to contain user and/or Ceph admin credentials.
   csi.storage.k8s.io/provisioner-secret-name: csi-cephfs-secret
-  csi.storage.k8s.io/provisioner-secret-namespace: default
+  csi.storage.k8s.io/provisioner-secret-namespace: test-sk
   csi.storage.k8s.io/node-stage-secret-name: csi-cephfs-secret
-  csi.storage.k8s.io/node-stage-secret-namespace: default
+  csi.storage.k8s.io/node-stage-secret-namespace: test-sk
+  csi.storage.k8s.io/resizer-secret-name: csi-cephfs-secret
+  csi.storage.k8s.io/resizer-secret-namespace: test-sk
+
 
   # (optional) The driver can use either ceph-fuse (fuse) or
   # ceph kernelclient (kernel).
@@ -40,3 +43,4 @@ parameters:
   # --volumemounter command-line argument.
   # mounter: kernel
 reclaimPolicy: Delete
+allowVolumeExpansion: true

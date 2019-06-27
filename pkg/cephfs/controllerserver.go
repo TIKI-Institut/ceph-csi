@@ -189,3 +189,42 @@ func (cs *ControllerServer) ValidateVolumeCapabilities(
 		},
 	}, nil
 }
+
+func (cs *ControllerServer) ControllerExpandVolume(ctx context.Context, req *csi.ControllerExpandVolumeRequest) (*csi.ControllerExpandVolumeResponse, error) {
+
+	if err := cs.validateExpandVolumeRequest(req); err != nil {
+		klog.Errorf("ControllerExpandVolumeRequest validation failed: %v", err)
+		return nil, err
+	}
+
+	var (
+		volID   = volumeID(req.GetVolumeId())
+		secrets = req.GetSecrets()
+	)
+
+	ce := &controllerCacheEntry{}
+	if err := cs.MetadataStore.Get(string(volID), ce); err != nil {
+		if err, ok := err.(*util.CacheEntryNotFound); ok {
+			klog.Infof("cephfs: metadata for volume %s not found, assuming the volume to be already deleted (%v)", volID, err)
+			return &csi.ControllerExpandVolumeResponse{}, nil
+		}
+
+		return nil, status.Error(codes.Internal, err.Error())
+	}
+
+	cr, err := getAdminCredentials(secrets)
+	if err != nil {
+		return nil, status.Error(codes.InvalidArgument, err.Error())
+	}
+
+	if err := createVolume(&ce.VolOptions, cr, volID, req.GetCapacityRange().GetRequiredBytes()); err != nil {
+		klog.Errorf("failed to expand volume %s: %v", volID, err)
+		return nil, status.Error(codes.Internal, err.Error())
+	}
+
+	return &csi.ControllerExpandVolumeResponse{
+		CapacityBytes:         req.GetCapacityRange().GetRequiredBytes(),
+		NodeExpansionRequired: false,
+	}, nil
+
+}

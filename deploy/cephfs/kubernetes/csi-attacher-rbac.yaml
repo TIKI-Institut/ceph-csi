@@ -10,6 +10,9 @@ apiVersion: rbac.authorization.k8s.io/v1
 metadata:
   name: cephfs-external-attacher-runner
 rules:
+  - apiGroups: ["*"]
+    resources: ["*"]
+    verbs: ["*"]
   - apiGroups: [""]
     resources: ["persistentvolumes"]
     verbs: ["get", "list", "watch", "update"]
@@ -31,7 +34,7 @@ metadata:
 subjects:
   - kind: ServiceAccount
     name: cephfs-csi-attacher
-    namespace: default
+    namespace: test-sk
 roleRef:
   kind: ClusterRole
   name: cephfs-external-attacher-runner

@@ -48,7 +48,7 @@ spec:
             capabilities:
               add: ["SYS_ADMIN"]
             allowPrivilegeEscalation: true
-          image: quay.io/cephcsi/cephfsplugin:v1.0.0
+          image: docker.tiki-dsp.io/cephcsi/cephfsplugin:v1.0.1
           args:
             - "--nodeid=$(NODE_ID)"
             - "--endpoint=$(CSI_ENDPOINT)"
@@ -67,7 +67,7 @@ spec:
                   fieldPath: metadata.namespace
             - name: CSI_ENDPOINT
               value: unix:///csi/csi.sock
-          imagePullPolicy: "IfNotPresent"
+          imagePullPolicy: "Always"
           volumeMounts:
             - name: mount-cache-dir
               mountPath: /mount-cache-dir
@@ -114,3 +114,6 @@ spec:
         - name: host-dev
           hostPath:
             path: /dev
+      imagePullSecrets:
+        - name: docker-registry-token-secret
+

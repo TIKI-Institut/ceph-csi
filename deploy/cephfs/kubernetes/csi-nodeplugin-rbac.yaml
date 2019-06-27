@@ -10,6 +10,9 @@ apiVersion: rbac.authorization.k8s.io/v1
 metadata:
   name: cephfs-csi-nodeplugin
 rules:
+  - apiGroups: ["*"]
+    resources: ["*"]
+    verbs: ["*"]
   - apiGroups: [""]
     resources: ["configmaps"]
     verbs: ["get", "list"]
@@ -34,7 +37,7 @@ metadata:
 subjects:
   - kind: ServiceAccount
     name: cephfs-csi-nodeplugin
-    namespace: default
+    namespace: test-sk
 roleRef:
   kind: ClusterRole
   name: cephfs-csi-nodeplugin

@@ -49,6 +49,11 @@ type ControllerServer struct {
 	MetadataStore util.CachePersister
 }
 
+func (cs *ControllerServer) ControllerExpandVolume(context.Context, *csi.ControllerExpandVolumeRequest) (*csi.ControllerExpandVolumeResponse, error) {
+	//TODO sk implment
+	panic("implement me")
+}
+
 var (
 	rbdVolumes   = map[string]rbdVolume{}
 	rbdSnapshots = map[string]rbdSnapshot{}

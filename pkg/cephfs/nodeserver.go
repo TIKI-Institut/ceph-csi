@@ -21,7 +21,7 @@ import (
 	"fmt"
 	"os"
 
-	csicommon "github.com/ceph/ceph-csi/pkg/csi-common"
+	"github.com/ceph/ceph-csi/pkg/csi-common"
 
 	"github.com/container-storage-interface/spec/lib/go/csi"
 	"google.golang.org/grpc/codes"
@@ -34,6 +34,11 @@ import (
 // node server spec.
 type NodeServer struct {
 	*csicommon.DefaultNodeServer
+}
+
+func (ns *NodeServer) NodeExpandVolume(context.Context, *csi.NodeExpandVolumeRequest) (*csi.NodeExpandVolumeResponse, error) {
+	//TODO sk implment
+	panic("implement me")
 }
 
 var (
