@@ -17,15 +17,15 @@ limitations under the License.
 package cephfs
 
 import (
-	csicommon "github.com/ceph/ceph-csi/pkg/csi-common"
+	"github.com/ceph/ceph-csi/pkg/csi-common"
 	"github.com/ceph/ceph-csi/pkg/util"
-
 	"github.com/container-storage-interface/spec/lib/go/csi"
 	"golang.org/x/net/context"
 	"google.golang.org/grpc/codes"
 	"google.golang.org/grpc/status"
 	"k8s.io/klog"
 	"k8s.io/kubernetes/pkg/util/keymutex"
+	"path"
 )
 
 // ControllerServer struct of CEPH CSI driver with supported methods of CSI
@@ -95,11 +95,13 @@ func (cs *ControllerServer) CreateVolume(ctx context.Context, req *csi.CreateVol
 		return nil, status.Error(codes.Internal, err.Error())
 	}
 
+	volumeContext := req.GetParameters()
+	volumeContext["path"] = path.Join(volOptions.CephVolumesRoot, string(volID))
 	return &csi.CreateVolumeResponse{
 		Volume: &csi.Volume{
 			VolumeId:      string(volID),
 			CapacityBytes: req.GetCapacityRange().GetRequiredBytes(),
-			VolumeContext: req.GetParameters(),
+			VolumeContext: volumeContext,
 		},
 	}, nil
 }
