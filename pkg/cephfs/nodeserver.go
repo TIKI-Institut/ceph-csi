@@ -102,7 +102,7 @@ func (ns *NodeServer) NodeStageVolume(ctx context.Context, req *csi.NodeStageVol
 
 	if volOptions.ProvisionVolume {
 		// Dynamically provisioned volumes don't have their root path set, do it here
-		volOptions.RootPath = getVolumeRootPathCeph(volID)
+		volOptions.RootPath = getVolumeRootPathCeph(volID, *volOptions)
 	}
 
 	if err = createMountPoint(stagingTargetPath); err != nil {

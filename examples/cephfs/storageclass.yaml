@@ -26,6 +26,9 @@ parameters:
   # Required for provisionVolume: "false"
   # rootPath: /absolute/path
 
+  # (optional) Relative path for ceph volumes on ceph server.
+  cephVolumesRoot: "csi-volumes"
+
   # The secrets have to contain user and/or Ceph admin credentials.
   csi.storage.k8s.io/provisioner-secret-name: csi-cephfs-secret
   csi.storage.k8s.io/provisioner-secret-namespace: test-sk

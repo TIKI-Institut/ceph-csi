@@ -22,9 +22,10 @@ import (
 )
 
 type volumeOptions struct {
-	Monitors string `json:"monitors"`
-	Pool     string `json:"pool"`
-	RootPath string `json:"rootPath"`
+	Monitors        string `json:"monitors"`
+	Pool            string `json:"pool"`
+	RootPath        string `json:"rootPath"`
+	CephVolumesRoot string `json:"cephVolumesRoot"`
 
 	Mounter         string `json:"mounter"`
 	ProvisionVolume bool   `json:"provisionVolume"`
@@ -151,5 +152,6 @@ func extractNewVolOpt(opts *volumeOptions, volOpt map[string]string) error {
 	// nolint
 	//  (skip errcheck  and gosec as this is optional)
 	extractOption(&opts.Mounter, "mounter", volOpt)
+	extractOption(&opts.CephVolumesRoot, "cephVolumesRoot", volOpt)
 	return nil
 }

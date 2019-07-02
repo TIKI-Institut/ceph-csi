@@ -25,7 +25,8 @@ import (
 )
 
 const (
-	cephVolumesRoot = "csi-volumes"
+	cephVolumesRoot      = "csi-volumes"
+	cephVolumesRootField = "cephVolumesRoot"
 
 	namespacePrefix = "ns-"
 )
@@ -34,12 +35,20 @@ func getCephRootPathLocal(volID volumeID) string {
 	return fmt.Sprintf("%s/controller/volumes/root-%s", PluginFolder, string(volID))
 }
 
-func getCephRootVolumePathLocal(volID volumeID) string {
-	return path.Join(getCephRootPathLocal(volID), cephVolumesRoot, string(volID))
+func getCephRootVolumePathLocal(volID volumeID, options volumeOptions) string {
+	err := validateNonEmptyField(options.CephVolumesRoot, cephVolumesRootField)
+	if err != nil {
+		return path.Join(getCephRootPathLocal(volID), cephVolumesRoot, string(volID))
+	}
+	return path.Join(getCephRootPathLocal(volID), options.CephVolumesRoot, string(volID))
 }
 
-func getVolumeRootPathCeph(volID volumeID) string {
-	return path.Join("/", cephVolumesRoot, string(volID))
+func getVolumeRootPathCeph(volID volumeID, options volumeOptions) string {
+	err := validateNonEmptyField(options.CephVolumesRoot, cephVolumesRootField)
+	if err != nil {
+		return path.Join("/", cephVolumesRoot, string(volID))
+	}
+	return path.Join("/", options.CephVolumesRoot, string(volID))
 }
 
 func getVolumeNamespace(volID volumeID) string {
@@ -57,7 +66,7 @@ func createVolume(volOptions *volumeOptions, adminCr *credentials, volID volumeI
 	defer unmountCephRoot(volID)
 
 	var (
-		volRoot         = getCephRootVolumePathLocal(volID)
+		volRoot         = getCephRootVolumePathLocal(volID, *volOptions)
 		volRootCreating = volRoot + "-creating"
 	)
 
@@ -97,7 +106,7 @@ func expandVolume(volOptions *volumeOptions, adminCr *credentials, volID volumeI
 	}
 	defer unmountCephRoot(volID)
 
-	var volRoot = getCephRootVolumePathLocal(volID)
+	var volRoot = getCephRootVolumePathLocal(volID, *volOptions)
 
 	if err := createMountPoint(volRoot); err != nil {
 		return err
@@ -118,7 +127,7 @@ func purgeVolume(volID volumeID, adminCr *credentials, volOptions *volumeOptions
 	defer unmountCephRoot(volID)
 
 	var (
-		volRoot         = getCephRootVolumePathLocal(volID)
+		volRoot         = getCephRootVolumePathLocal(volID, *volOptions)
 		volRootDeleting = volRoot + "-deleting"
 	)
 

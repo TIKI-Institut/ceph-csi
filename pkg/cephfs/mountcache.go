@@ -96,7 +96,7 @@ func mountOneCacheEntry(ce *controllerCacheEntry, me *volumeMountCacheEntry) err
 	volOptions := ce.VolOptions
 
 	if volOptions.ProvisionVolume {
-		volOptions.RootPath = getVolumeRootPathCeph(volID)
+		volOptions.RootPath = getVolumeRootPathCeph(volID, volOptions)
 		cr, err = getAdminCredentials(decodeCredentials(me.Secrets))
 		if err != nil {
 			return err
