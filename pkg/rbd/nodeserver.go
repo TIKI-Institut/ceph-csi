@@ -40,11 +40,6 @@ type NodeServer struct {
 	mounter mount.Interface
 }
 
-func (ns *NodeServer) NodeExpandVolume(context.Context, *csi.NodeExpandVolumeRequest) (*csi.NodeExpandVolumeResponse, error) {
-	//TODO sk implment
-	panic("implement me")
-}
-
 //TODO remove both stage and unstage methods
 //once https://github.com/kubernetes-csi/drivers/pull/145 is merged
 

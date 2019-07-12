@@ -36,11 +36,6 @@ type NodeServer struct {
 	*csicommon.DefaultNodeServer
 }
 
-func (ns *NodeServer) NodeExpandVolume(context.Context, *csi.NodeExpandVolumeRequest) (*csi.NodeExpandVolumeResponse, error) {
-	//TODO sk implment
-	panic("implement me")
-}
-
 var (
 	mtxNodeVolumeID = keymutex.NewHashed(0)
 )
